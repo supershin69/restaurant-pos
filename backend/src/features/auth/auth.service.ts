@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import type { Jwt } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
 import prisma from "../../db/connect_db.ts";
 import type { AuthResponse, LoginDTO, RegisterDTO } from "./auth.types.ts";
