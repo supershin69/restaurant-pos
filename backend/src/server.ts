@@ -1,12 +1,10 @@
-import { configDotenv } from "dotenv";
+import "dotenv/config";
 import { type Express, type Request, type Response } from "express";
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import prisma from "./db/connect_db.ts";
 import { authRoutes } from "./features/auth/auth.routes.ts";
-import cookieParser from "cookie-parser";
-
-configDotenv();
 
 const app: Express = express();
 app.use(cors());

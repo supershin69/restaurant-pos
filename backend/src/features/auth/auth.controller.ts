@@ -20,7 +20,7 @@ class AuthController {
                 data: result.user
             });
         } catch (error: any) {
-            if (error.message === 'Email is already in use.') {
+            if (error.message === 'Email already exists') {
                 return res.status(409).json({ error: error.message });
             }
             
@@ -48,12 +48,12 @@ class AuthController {
             data: result.user
         });
     } catch (error: any) {
-        if (error.message === 'Invalid email or password.') {
+        if (error.message === 'Invalid email or password') {
             return res.status(401).json({ error: error.message });
         }
 
         // Fallback for unexpected database/server issues
-        console.error('[Auth Login Error]:', error);
+        console.error('[Auth Login Error]: ', error);
         res.status(500).json({ error: 'An unexpected error occurred during login.' });
     }
 }
