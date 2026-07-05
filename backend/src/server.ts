@@ -3,12 +3,16 @@ import { type Express, type Request, type Response } from "express";
 import express from "express";
 import cors from "cors";
 import prisma from "./db/connect_db.ts";
+import { authRoutes } from "./features/auth/auth.routes.ts";
+import cookieParser from "cookie-parser";
 
 configDotenv();
 
 const app: Express = express();
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req: Request, res: Response) => {
@@ -16,6 +20,8 @@ app.get('/', (req: Request, res: Response) => {
         message: "Hello World"
     });
 });
+
+app.use('/api/auth', authRoutes);
 
 async function startServer() {
     try {
