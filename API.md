@@ -14,7 +14,7 @@
 
 # Good Luck.
 
-1. /api/auth/register
+### 1. /api/auth/register
 
 - It registers the user using the credentials given by the frontend.
 - Query Parameters -> (data) object that is like this { name, email, role, password }.
@@ -38,7 +38,7 @@
 }
 ```
 
-2. /api/auth/login
+### 2. /api/auth/login
 
 - It logs in the existing user.
 - Query Parameters -> (data) object that is like this { email, password }
