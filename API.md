@@ -17,6 +17,7 @@
 ### 1. /api/auth/register
 
 - It registers the user using the credentials given by the frontend.
+- It only registers the user.
 - Query Parameters -> (data) object that is like this { name, email, role, password }.
 
 ### Success Response
@@ -28,11 +29,10 @@
 {
   "status": "success",
   "message": "User registered successfully",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjYTM4MGJhYy1lMzE1LTRjdjrjojeijoeoyYzBjZDc4MTVhYjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODMzMDQ4NjMsImV4cCI6MTc4MzM0ODA2M30.bkIXkJAEAZ_IoI3xX91wJhrAnoAQOy4ccBUmoWppc38",
   "data": {
-    "id": "ca380bac-e315-4c02-8370-2c0cd7815ab8",
+    "id": "b0207335-4995-4914-afe0-f8afc13ac45f",
     "name": "Shin Thant Aung",
-    "email": "mgshinthant57@gmail.com",
+    "email": "mgshinthant58@gmail.com",
     "role": "ADMIN"
   }
 }
