@@ -49,7 +49,7 @@ model Profile {
 model Food {
   id          String   @id @default(uuid())
   name        String
-  description String
+  description String?
   price       Int
   photoUrl    String   @map("photo_url")
   createdAt   DateTime @default(now()) @map("created_at")
