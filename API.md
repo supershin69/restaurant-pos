@@ -1,12 +1,16 @@
 ### This is your guide for APIs I wrote.
 
-# If the server goes down, or you just wanna take a glance at how the API structure looks, you can come here.
+- If the server goes down, or you just wanna take a glance at how the API structure looks, you can come here.
 
-# I will be updating this file whenever I make changes to the API.
+- I will be updating this file whenever I make changes to the API.
 
-# But keep in mind that sometimes, I may forget to change this file.
+- But keep in mind that sometimes, I may forget to change this file.
 
-# So if you encounter API problems that doesn't match the model I wrote here, you can contact me via telegram group chat.
+- So if you encounter API problems that doesn't match the model I wrote here, you can contact me via telegram group chat.
+
+- Don't worry, I deformed the payload for this register/login demo json :3
+
+- I will be changing the register function based on feature requirements soon.
 
 # Good Luck.
 
