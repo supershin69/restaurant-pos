@@ -116,7 +116,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
     "name": "Movie Snack",
     "description": null,
     "price": 25000,
-    "photoUrl": "https://svaksufqqrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783356156110-re1s8n.png",
+    "photoUrl": "https://svaksufqqsjkfnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783356156110-re1s8n.png",
     "createdAt": "2026-07-06T16:42:40.067Z",
     "updatedAt": "2026-07-06T16:42:40.067Z"
   }
