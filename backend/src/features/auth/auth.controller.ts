@@ -6,17 +6,9 @@ class AuthController {
         try {
             const result = await authService.registerUser(req.body);
 
-            res.cookie("token", result.token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: 12 * 60 * 60 * 1000
-            });
-
             return res.status(201).json({
                 status: "success",
                 message: "User registered successfully",
-                token: result.token,
                 data: result.user
             });
         } catch (error: any) {
