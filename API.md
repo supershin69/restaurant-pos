@@ -61,3 +61,64 @@
   }
 }
 ```
+
+### 3. /api/food/upload
+
+- It uploads food to the database.
+- Query parameters are like this -> data object (name, description?, price) and file object
+- Example code ->
+
+```javascript
+
+async createFood(data: foodType, file: Express.Multer.File) {
+        const fileName = renameFile(file.originalname);
+        const filepath = `images/${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from("pos-food-photo")
+            .upload(filepath, file.buffer, {
+                contentType: file.mimetype
+            });
+
+        if (uploadError) {
+            throw new Error(`Failed to upload image: ${uploadError.message}`);
+        }
+
+        const { data: publicUrlData } = supabase.storage
+            .from("pos-food-photo")
+            .getPublicUrl(filepath);
+
+        const newFood = await prisma.food.create({
+            data: {
+                name: data.name,
+                description: data.description,
+                price: data.price,
+                photoUrl: publicUrlData.publicUrl
+            }
+        });
+
+        return newFood;
+    }
+
+```
+
+### Success Response
+
+- HttpStatusCode (201)
+- content ->
+
+```json
+{
+  "status": "success",
+  "message": "Food item created successfully",
+  "data": {
+    "id": "4ae151fd-cbe9-4f5a-a878-852e8dde27b6",
+    "name": "Movie Snack",
+    "description": null,
+    "price": 25000,
+    "photoUrl": "https://svaksufqqrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783356156110-re1s8n.png",
+    "createdAt": "2026-07-06T16:42:40.067Z",
+    "updatedAt": "2026-07-06T16:42:40.067Z"
+  }
+}
+```

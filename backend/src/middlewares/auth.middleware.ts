@@ -14,7 +14,10 @@ export interface AuthRequest extends Request {
 
 //! Middleware to check if user is authenticated via httpOnly cookies or not
 export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
+    console.log("Auth middleware called.");
     const token = req.cookies?.token;
+    //console.log(req.cookies);
+    //console.log(req.cookies?.token);
 
      if (!token) {
         return res.status(401).json({
@@ -46,6 +49,7 @@ export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction)
 
 //! Middleware for RBAC check
 export const restrictTo = (...allowedRoles: Role[]) => {
+    console.log("Role check middleware called.")
     return (req: AuthRequest, res: Response, next: NextFunction) => {
         const userRole = req.user?.role;
 

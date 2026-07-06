@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import prisma from "./db/connect_db.ts";
 import { authRoutes } from "./features/auth/auth.routes.ts";
+import { foodRoutes } from "./features/food/food.routes.ts";
+import { requireAuth, restrictTo } from "./middlewares/auth.middleware.ts";
 
 const app: Express = express();
 app.use(cors());
@@ -20,6 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/food', requireAuth, restrictTo('ADMIN'), foodRoutes);
 
 async function startServer() {
     try {
