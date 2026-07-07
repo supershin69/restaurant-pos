@@ -25,4 +25,6 @@ export const initSocketServer = (httpServer: HttpServer): Server => {
             console.log(`Client disconnected: ${socket.id}`);
         });
     });
+
+    return io;
 }

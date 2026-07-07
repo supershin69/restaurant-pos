@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { foodService } from "./food.service.ts";
+import type { Server } from "socket.io";
 
 class FoodController {
     async uploadFood(req: Request, res: Response) {
@@ -10,6 +11,14 @@ class FoodController {
 
             const result = await foodService.createFood(req.body, req.file);
 
+            foodService.clearFoodCache();
+
+            const io: Server = req.app.get("io");
+            io.emit("foods_mutated", { 
+                action: "CREATE", 
+                message: "A new food item was added" 
+            });
+
             return res.status(201).json({
                 status: "success",
                 message: "Food item created successfully",
@@ -19,6 +28,23 @@ class FoodController {
             console.error('[Create Food Error]:', error);
             res.status(500).json({ error: 'An unexpected error occurred while creating the food item.' });
         }
+    }
+
+    async fetchAllFoods(req: Request, res: Response) {
+        try {
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
+
+            const { data, fromCache } = await foodService.getAllFoods(page, limit);
+
+            res.setHeader("X-Cache-Lookup", fromCache ? "HIT" : "MISS");
+
+            return res.status(200).json({ status: "success", message: "food fetched successfully", data});
+        } catch (error: any) {
+            console.error('[Get Foods Error]:', error);
+            return res.status(500).json({ error: 'Failed to fetch food items.' });
+        }
+        
     }
 }
 

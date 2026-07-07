@@ -7,8 +7,15 @@ import prisma from "./db/connect_db.ts";
 import { authRoutes } from "./features/auth/auth.routes.ts";
 import { foodRoutes } from "./features/food/food.routes.ts";
 import { requireAuth, restrictTo } from "./middlewares/auth.middleware.ts";
+import { createServer } from "http";
+import { initSocketServer } from "./config/socket.config.ts";
 
 const app: Express = express();
+const httpServer = createServer(app);
+
+const io = initSocketServer(httpServer);
+
+app.set("io", io);
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
@@ -22,7 +29,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/food', requireAuth, restrictTo('ADMIN'), foodRoutes);
+app.use('/api/food', requireAuth, restrictTo('ADMIN', 'CASHIER'), foodRoutes);
 
 async function startServer() {
     try {
@@ -31,7 +38,7 @@ async function startServer() {
         console.log("Successfully Connected to Supabase PostgreSQL Database");
 
         // This is the actual server start code
-        app.listen(PORT, () => console.log(`The service is running at port ${PORT}. Press Ctrl + C or Cmd + C to stop the server.`));
+        httpServer.listen(PORT, () => console.log(`The service is running at port ${PORT}. Press Ctrl + C or Cmd + C to stop the server.`));
     } catch (error) {
         console.error("Failed to connect to the database.", error);
 
