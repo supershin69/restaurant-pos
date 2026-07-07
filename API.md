@@ -176,3 +176,26 @@ async createFood(data: foodType, file: Express.Multer.File) {
   }
 }
 ```
+
+### PUT /api/food/:id/update
+
+- This route updates the food
+- It accepts id, data object (name, description?, price) and file object
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Food item updated successfully",
+  "data": {
+    "id": "c4b34d47-7361-493f-8eaa-70c65828ed46",
+    "name": "ပလာတာ အသေး",
+    "description": null,
+    "price": 2500,
+    "photoUrl": "https://svaksufqqskdjfwjefjrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783410142937-zqogkm.png",
+    "createdAt": "2026-07-07T05:34:21.869Z",
+    "updatedAt": "2026-07-07T07:42:24.958Z"
+  }
+}
+```

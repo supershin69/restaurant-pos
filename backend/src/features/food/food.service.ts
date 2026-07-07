@@ -7,6 +7,7 @@ import NodeCache from "node-cache";
 const foodCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
 
 class FoodService {
+    //! Food Upload Function
     async createFood(data: foodType, file: Express.Multer.File) {
         const fileName = renameFile(file.originalname);
         const filepath = `images/${fileName}`;
@@ -37,6 +38,44 @@ class FoodService {
         return newFood;
     }
 
+    async updateFood(id: string, data: Partial<foodType>, file?: Express.Multer.File) {
+        let publicUrl: string | undefined = undefined;
+
+        if (file) {
+            const fileName = renameFile(file.originalname);
+            const filePath = `images/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from("pos-food-photo")
+                .upload(filePath, file.buffer, {
+                    contentType: file.mimetype
+                });
+
+            if (uploadError) {
+                throw new Error(`Failed to upload image: ${uploadError.message}`);
+            }
+
+            const { data: publicUrlData } = supabase.storage
+                .from("pos-food-photo")
+                .getPublicUrl(filePath)
+
+            publicUrl = publicUrlData.publicUrl;
+        }
+
+        const updateFood = await prisma.food.update({
+            where: { id },
+            data: {
+                name: data.name ?? undefined,
+                description: data.description ?? undefined,
+                price: data.price ? data.price : undefined,
+                photoUrl: publicUrl ?? undefined
+            }
+        });
+
+        return updateFood;
+    }
+
+    //! Fetch Food Function
     async getAllFoods(page: number, limit: number) {
         const skip = (page - 1) * limit;
         const cacheKey = `foods:page:${page}:limit:${limit}`;
@@ -71,6 +110,7 @@ class FoodService {
 
     }
 
+    //! Clear food cache function
     clearFoodCache() {
         const keys = foodCache.keys();
         const foodKeys = keys.filter(key => key.startsWith('foods:page:'));

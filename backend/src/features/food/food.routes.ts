@@ -10,5 +10,7 @@ const router = Router();
 
 router.get('/', foodController.fetchAllFoods);
 router.post('/upload', upload.single('image'), validate(createFoodSchema), restrictTo('ADMIN'), foodController.uploadFood);
+router.put('/:id/update', upload.single('image'), validate(createFoodSchema), restrictTo('ADMIN'), foodController.updateFood);
+
 
 export { router as foodRoutes };
