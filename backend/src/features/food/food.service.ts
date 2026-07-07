@@ -2,6 +2,9 @@ import prisma from "../../db/connect_db.ts";
 import { renameFile } from "../../utils/fileRemamer.ts";
 import { supabase } from "../../utils/supabase.ts";
 import type { foodType } from "./food.types.ts";
+import NodeCache from "node-cache";
+
+const foodCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
 
 class FoodService {
     async createFood(data: foodType, file: Express.Multer.File) {
@@ -33,6 +36,48 @@ class FoodService {
 
         return newFood;
     }
+
+    async getAllFoods(page: number, limit: number) {
+        const skip = (page - 1) * limit;
+        const cacheKey = `foods:page:${page}:limit:${limit}`;
+
+        const cachedData = foodCache.get(cacheKey);
+        if (cachedData) {
+            return { data: cachedData, fromCache: true }
+        }
+
+        const [foods, totalCount] = await prisma.$transaction([
+            prisma.food.findMany({
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' }
+            }),
+            prisma.food.count()
+        ]);
+
+        const result = {
+            foods,
+            meta: {
+                totalItems: totalCount,
+                totalPages: Math.ceil(totalCount / limit),
+                currentPage: page,
+                limit
+            }
+        };
+
+        foodCache.set(cacheKey, result);
+
+        return { data: result, fromCache: false }
+
+    }
+
+    clearFoodCache() {
+        const keys = foodCache.keys();
+        const foodKeys = keys.filter(key => key.startsWith('foods:page:'));
+        if (foodKeys.length > 0) {
+            foodCache.del(foodKeys);
+        }
+    };
 }
 
 export const foodService = new FoodService();

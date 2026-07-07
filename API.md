@@ -38,6 +38,8 @@
 }
 ```
 
+#
+
 ### 2. /api/auth/login
 
 - It logs in the existing user.
@@ -61,6 +63,8 @@
   }
 }
 ```
+
+#
 
 ### 3. /api/food/upload
 
@@ -122,3 +126,5 @@ async createFood(data: foodType, file: Express.Multer.File) {
   }
 }
 ```
+
+#
