@@ -12,7 +12,7 @@
 
 - I will be changing the register function based on feature requirements soon.
 
-# Good Luck.
+### Good Luck.
 
 ### 1. POST /api/auth/register
 
