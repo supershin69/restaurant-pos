@@ -78,6 +78,22 @@ class FoodController {
         }
         
     }
+
+    async fetchDeletedFoods(req: Request, res: Response) {
+        try {
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
+
+            const { data, fromCache } = await foodService.getDeletedFoods(page, limit);
+
+            res.setHeader("X-Cache-Lookup", fromCache ? "HIT" : "MISS");
+
+            return res.status(200).json({ status: "success", message: "Deleted foods fetched successfully", ...data});
+        } catch (error: any) {
+            console.error('[Get Foods Error]:', error);
+            return res.status(500).json({ error: 'Failed to fetch deleted food items.' });
+        }
+    }
 }
 
 export const foodController = new FoodController();

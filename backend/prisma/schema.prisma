@@ -47,13 +47,15 @@ model Profile {
 }
 
 model Food {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
   description String?
   price       Int
-  photoUrl    String   @map("photo_url")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  photoUrl    String    @map("photo_url")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  isDeleted   Boolean   @default(false) @map("is_deleted")
+  deletedAt   DateTime? @map("deleted_at")
 
   // Relations
   promotions PromotionItem[]
@@ -99,11 +101,13 @@ model Table {
 }
 
 model Order {
-  id        String   @id @default(uuid())
-  cashierId String   @map("cashier_id")
-  tableId   String   @map("table_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        String    @id @default(uuid())
+  cashierId String    @map("cashier_id")
+  tableId   String    @map("table_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
 
   // Relations
   cashier User        @relation(fields: [cashierId], references: [id])

@@ -75,6 +75,8 @@ class FoodService {
         return updateFood;
     }
 
+    //! Food Delete Function
+
     //! Fetch Food Function
     async getAllFoods(page: number, limit: number) {
         const skip = (page - 1) * limit;
@@ -108,6 +110,39 @@ class FoodService {
 
         return { data: result, fromCache: false }
 
+    }
+
+    async getDeletedFoods(page: number, limit: number) {
+        const skip = (page - 1) * limit;
+        const cacheKey = `foods:page:${page}:limit:${limit}:deleted`
+
+        const cachedData = foodCache.get(cacheKey);
+
+        if (cachedData) {
+            return { data: cachedData, fromCache: true }
+        }
+
+        const [deletedFoods, totalCount] = await prisma.$transaction([
+            prisma.food.findMany({
+                where: { isDeleted: true },
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' }
+            }),
+            prisma.food.count({ where: { isDeleted: true }})
+        ]);
+
+        const result = {
+            deletedFoods,
+            meta: {
+                totalItems: totalCount,
+                totalPages: Math.ceil(totalCount / limit),
+                currentPage: page,
+                limit
+            }
+        };
+
+        return { data: result, fromCache: false };
     }
 
     //! Clear food cache function
