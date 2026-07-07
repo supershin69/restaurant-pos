@@ -67,7 +67,7 @@ class FoodController {
             const page = Number(req.query.page) || 1;
             const limit = Number(req.query.limit) || 10;
 
-            const { data, fromCache } = await foodService.getAllFoods(page, limit);
+            const { data, fromCache } = await foodService.getFoods(page, limit);
 
             res.setHeader("X-Cache-Lookup", fromCache ? "HIT" : "MISS");
 

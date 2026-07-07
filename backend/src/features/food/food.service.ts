@@ -78,7 +78,7 @@ class FoodService {
     //! Food Delete Function
 
     //! Fetch Food Function
-    async getAllFoods(page: number, limit: number) {
+    async getFoods(page: number, limit: number) {
         const skip = (page - 1) * limit;
         const cacheKey = `foods:page:${page}:limit:${limit}`;
 
@@ -89,11 +89,12 @@ class FoodService {
 
         const [foods, totalCount] = await prisma.$transaction([
             prisma.food.findMany({
+                where: { isDeleted: false },
                 skip,
                 take: limit,
                 orderBy: { createdAt: 'desc' }
             }),
-            prisma.food.count()
+            prisma.food.count({where: { isDeleted: false }})
         ]);
 
         const result = {
