@@ -177,7 +177,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### PUT /api/food/:id/update
+### 4. PUT /api/food/:id/update
 
 - This route updates the food
 - It accepts id, data object (name, description?, price) and file object
