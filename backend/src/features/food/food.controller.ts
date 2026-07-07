@@ -39,7 +39,7 @@ class FoodController {
 
             res.setHeader("X-Cache-Lookup", fromCache ? "HIT" : "MISS");
 
-            return res.status(200).json({ status: "success", message: "food fetched successfully", data});
+            return res.status(200).json({ status: "success", message: "food fetched successfully", ...data});
         } catch (error: any) {
             console.error('[Get Foods Error]:', error);
             return res.status(500).json({ error: 'Failed to fetch food items.' });
