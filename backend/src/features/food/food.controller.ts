@@ -69,8 +69,11 @@ class FoodController {
         try {
             const page = Number(req.query.page) || 1;
             const limit = Number(req.query.limit) || 10;
+            const search = req.query.search ? String(req.query.search) : undefined;
+            const sortBy = req.query.sortBy ? String(req.query.sortBy) : 'createdAt';
+            const sortOrder = req.query.sortOrder === 'asc' ? 'asc' : 'desc';
 
-            const { data, fromCache } = await foodService.getFoods(page, limit);
+            const { data, fromCache } = await foodService.getFoods(page, limit, search, sortBy, sortOrder);
 
             res.setHeader("X-Cache-Lookup", fromCache ? "HIT" : "MISS");
 
@@ -87,8 +90,11 @@ class FoodController {
         try {
             const page = Number(req.query.page) || 1;
             const limit = Number(req.query.limit) || 10;
+            const search = req.query.search ? String(req.query.search) : undefined;
+            const sortBy = req.query.sortBy ? String(req.query.sortBy) : 'createdAt';
+            const sortOrder = req.query.sortOrder === 'asc' ? 'asc' : 'desc';
 
-            const { data, fromCache } = await foodService.getDeletedFoods(page, limit);
+            const { data, fromCache } = await foodService.getDeletedFoods(page, limit, search, sortBy, sortOrder);
 
             res.setHeader("X-Cache-Lookup", fromCache ? "HIT" : "MISS");
 
@@ -156,6 +162,39 @@ class FoodController {
 
             return res.status(500).json({
                 error: "Failed to soft delete food items."
+            });
+        }
+    }
+
+    async bulkRestoreFood(req: Request, res: Response) {
+        try {
+            const { ids } = req.body;
+            if (!Array.isArray(ids) || ids.length === 0) {
+                return res.status(400).json({
+                    error: "Food IDs are required."
+                });
+            }
+            const result = await foodService.restoreFood(ids);
+
+            foodService.clearFoodCache();
+
+            const io: Server = req.app.get("io");
+
+            io.emit("foods_mutated", {
+                action: "UPDATE",
+                message: `${result.count} food items were restored`
+            });
+
+            return res.status(200).json({
+                status: "success",
+                message: `${result.count} items restored successfully.`,
+                data: result
+            });
+        } catch(error: any) {
+            console.error("[Bulk restore Error]:", error);
+
+            return res.status(500).json({
+                error: "Failed to restore food items."
             });
         }
     }

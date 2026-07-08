@@ -64,6 +64,7 @@ class AuthService {
             }
         }
     }
+    
 
     //! Helper Function to Find Existing Emails
     async findUser(email: string) {

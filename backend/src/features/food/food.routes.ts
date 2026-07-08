@@ -13,6 +13,7 @@ router.get('/', foodController.fetchAllFoods);
 router.get('/deleted', foodController.fetchDeletedFoods);
 router.post('/upload', upload.single('image'), validate(createFoodSchema), restrictTo('ADMIN'), foodController.uploadFood);
 router.delete('/bulk/delete', restrictTo('ADMIN'), foodController.bulkSoftDeleteFoods);
+router.put('/bulk/restore', restrictTo('ADMIN'), foodController.bulkRestoreFood);
 
 // Dynamic Routes
 router.delete('/:id/delete', restrictTo('ADMIN'), foodController.softDeleteFood);

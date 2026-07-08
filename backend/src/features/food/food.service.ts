@@ -91,23 +91,31 @@ class FoodService {
     }
 
     //! Fetch Food Function
-    async getFoods(page: number, limit: number) {
+    async getFoods(page: number, limit: number, search?: string, sortBy: string = 'createdAt', sortOrder: 'asc' | 'desc' = 'desc') {
         const skip = (page - 1) * limit;
-        const cacheKey = `foods:page:${page}:limit:${limit}`;
+        const cacheKey = `foods:page:${page}:limit:${limit}:search:${search || ''}:sortBy:${sortBy}:sortOrder:${sortOrder}`;
 
         const cachedData = foodCache.get(cacheKey);
         if (cachedData) {
             return { data: cachedData, fromCache: true }
         }
 
+        const whereClause: any = { isDeleted: false };
+        if (search) {
+            whereClause.name = {
+                contains: search,
+                mode: 'insensitive'
+            }
+        }
+
         const [foods, totalCount] = await prisma.$transaction([
             prisma.food.findMany({
-                where: { isDeleted: false },
+                where: whereClause,
                 skip,
                 take: limit,
-                orderBy: { createdAt: 'desc' }
+                orderBy: { [sortBy]: sortOrder }
             }),
-            prisma.food.count({where: { isDeleted: false }})
+            prisma.food.count({where: whereClause})
         ]);
 
         const result = {
@@ -127,9 +135,9 @@ class FoodService {
     }
 
     //! Get Deleted Foods function
-    async getDeletedFoods(page: number, limit: number) {
+    async getDeletedFoods(page: number, limit: number, search?: string, sortBy: string = 'createdAt', sortOrder: 'asc' | 'desc' = 'desc') {
         const skip = (page - 1) * limit;
-        const cacheKey = `foods:page:${page}:limit:${limit}:deleted`
+        const cacheKey = `foods:page:${page}:limit:${limit}:deleted:search:${search || ''}:sortBy:${sortBy}:sortOrder:${sortOrder}`
 
         const cachedData = foodCache.get(cacheKey);
 
@@ -137,14 +145,22 @@ class FoodService {
             return { data: cachedData, fromCache: true }
         }
 
+        const whereClause: any = { isDeleted: true };
+        if (search) {
+            whereClause.name = {
+                contains: search,
+                mode: 'insensitive'
+            }
+        }
+
         const [deletedFoods, totalCount] = await prisma.$transaction([
             prisma.food.findMany({
-                where: { isDeleted: true },
+                where: whereClause,
                 skip,
                 take: limit,
-                orderBy: { createdAt: 'desc' }
+                orderBy: { [sortBy]: sortOrder }
             }),
-            prisma.food.count({ where: { isDeleted: true }})
+            prisma.food.count({ where: whereClause})
         ]);
 
         const result = {
@@ -193,10 +209,27 @@ class FoodService {
         return deletedFoods;
     }
 
+    async restoreFood(ids: string[]) {
+        const restoredFoods = await prisma.food.updateMany({
+            where: {
+                id: {
+                    in: ids
+                },
+                isDeleted: true
+            },
+            data: {
+                isDeleted: false,
+                deletedAt: null
+            }
+        });
+
+        return restoredFoods;
+    }
+
     //! Clear food cache function
     clearFoodCache() {
         const keys = foodCache.keys();
-        const foodKeys = keys.filter(key => key.startsWith('foods:page:'));
+        const foodKeys = keys.filter(key => key.startsWith('foods:'));
         if (foodKeys.length > 0) {
             foodCache.del(foodKeys);
         }
