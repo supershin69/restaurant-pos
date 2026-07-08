@@ -193,7 +193,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
     "name": "ပလာတာ အသေး",
     "description": null,
     "price": 2500,
-    "photoUrl": "https://svaksufqqskdjfwjefjrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783410142937-zqogkm.png",
+    "photoUrl": "https://svaksufqqskdjfwjefjrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783410142937-zoigkm.png",
     "createdAt": "2026-07-07T05:34:21.869Z",
     "updatedAt": "2026-07-07T07:42:24.958Z"
   }

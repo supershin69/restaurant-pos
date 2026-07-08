@@ -26,6 +26,9 @@ class FoodController {
                 data: result
             });
         } catch (error: any) {
+            if (error.message === 'Food already exists') {
+                return res.status(409).json({ error: error.message });
+            }
             console.error('[Create Food Error]:', error);
             res.status(500).json({ error: 'An unexpected error occurred while creating the food item.' });
         }
@@ -79,6 +82,7 @@ class FoodController {
         
     }
 
+    //! Fetch Deleted Foods Function
     async fetchDeletedFoods(req: Request, res: Response) {
         try {
             const page = Number(req.query.page) || 1;
@@ -92,6 +96,67 @@ class FoodController {
         } catch (error: any) {
             console.error('[Get Foods Error]:', error);
             return res.status(500).json({ error: 'Failed to fetch deleted food items.' });
+        }
+    }
+
+    //! Soft Delete Function
+    async softDeleteFood( req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            if (typeof id !== 'string') {
+                return res.status(400).json({ error: 'Invalid food ID provided.' });
+            }
+            const result = await foodService.softDeleteFood(id);
+            foodService.clearFoodCache();
+
+            const io: Server = req.app.get("io");
+            io.emit("foods_mutated", {
+                action: "DELETE",
+                message: "The food was soft deleted."
+            });
+
+            return res.status(200).json({
+                status: "success",
+                message: "Food was soft deleted successfully",
+                data: result
+            });
+        } catch (error: any) {
+            console.error('[Soft Delete Foods Error]: ', error);
+            return res.status(500).json({ error: 'Failed to soft delete food items.'});
+        }
+    }
+
+    //! Bulk Soft Delete Function
+    async bulkSoftDeleteFoods(req: Request, res: Response) {
+        try {
+            const { ids } = req.body;
+            if (!Array.isArray(ids) || ids.length === 0) {
+                return res.status(400).json({
+                    error: "Food IDs are required."
+                });
+            }
+            const result = await foodService.bulkSoftDeleteFood(ids);
+
+            foodService.clearFoodCache();
+
+            const io: Server = req.app.get("io");
+
+            io.emit("foods_mutated", {
+                action: "DELETE",
+                message: `${result.count} food items were soft deleted.`
+            });
+
+            return res.status(200).json({
+                status: "success",
+                message: `${result.count} items soft deleted successfully.`,
+                data: result
+            });
+        } catch(error: any) {
+            console.error("[Bulk Soft Delete Error]:", error);
+
+            return res.status(500).json({
+                error: "Failed to soft delete food items."
+            });
         }
     }
 }

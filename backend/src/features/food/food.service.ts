@@ -9,6 +9,20 @@ const foodCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
 class FoodService {
     //! Food Upload Function
     async createFood(data: foodType, file: Express.Multer.File) {
+        const existingFood = await prisma.food.findFirst({
+            where: {
+                name: {
+                    equals: data.name,
+                    mode: 'insensitive'
+                },
+                isDeleted: false
+            }
+        });
+
+        if (existingFood) {
+            throw new Error("Food already exists");
+        }
+
         const fileName = renameFile(file.originalname);
         const filepath = `images/${fileName}`;
 
@@ -38,6 +52,7 @@ class FoodService {
         return newFood;
     }
 
+    //! Update Food Function
     async updateFood(id: string, data: Partial<foodType>, file?: Express.Multer.File) {
         let publicUrl: string | undefined = undefined;
 
@@ -75,8 +90,6 @@ class FoodService {
         return updateFood;
     }
 
-    //! Food Delete Function
-
     //! Fetch Food Function
     async getFoods(page: number, limit: number) {
         const skip = (page - 1) * limit;
@@ -113,6 +126,7 @@ class FoodService {
 
     }
 
+    //! Get Deleted Foods function
     async getDeletedFoods(page: number, limit: number) {
         const skip = (page - 1) * limit;
         const cacheKey = `foods:page:${page}:limit:${limit}:deleted`
@@ -143,7 +157,40 @@ class FoodService {
             }
         };
 
+        foodCache.set(cacheKey, result);
+
         return { data: result, fromCache: false };
+    }
+
+    //! Soft delete foods
+    async softDeleteFood(id: string) {
+        const deletedFood = await prisma.food.updateMany({
+            where: { id, isDeleted: false },
+            data: {
+                isDeleted: true,
+                deletedAt: new Date()
+            }
+        });
+
+        return deletedFood;
+    }
+
+    //! Bulk soft delete foods
+    async bulkSoftDeleteFood(ids: string[]) {
+        const deletedFoods = await prisma.food.updateMany({
+            where: {
+                id: {
+                    in: ids
+                },
+                isDeleted: false
+            },
+            data: {
+                isDeleted: true,
+                deletedAt: new Date()
+            }
+        });
+
+        return deletedFoods;
     }
 
     //! Clear food cache function

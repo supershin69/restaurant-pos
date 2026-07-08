@@ -61,6 +61,7 @@ model Food {
   promotions PromotionItem[]
   orderItems OrderItem[]
 
+  @@unique([name, isDeleted])
   @@map("foods")
 }
 
