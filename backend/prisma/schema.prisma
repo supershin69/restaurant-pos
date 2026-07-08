@@ -93,8 +93,9 @@ model PromotionItem {
 }
 
 model Table {
-  id   String @id @default(uuid())
-  name String // e.g., "Table 1", "VIP Room A"
+  id        String   @id @default(uuid())
+  name      String   @unique // e.g., "Table 1", "VIP Room A"
+  createdAt DateTime @default(now()) @map("created_at")
 
   orders Order[]
 
