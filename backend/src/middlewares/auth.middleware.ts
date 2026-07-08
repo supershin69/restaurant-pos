@@ -15,9 +15,13 @@ export interface AuthRequest extends Request {
 //! Middleware to check if user is authenticated via httpOnly cookies or not
 export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
     console.log("Auth middleware called.");
-    const token = req.cookies?.token;
+    let token = req.cookies?.token;
     //console.log(req.cookies);
     //console.log(req.cookies?.token);
+
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
 
      if (!token) {
         return res.status(401).json({
