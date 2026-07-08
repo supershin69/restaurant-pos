@@ -298,3 +298,110 @@ async createFood(data: foodType, file: Express.Multer.File) {
   }
 }
 ```
+
+### 10. GET /api/table
+
+- This route fetches tables
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Tables fetched successfully.",
+  "tables": [
+    {
+      "id": "546129d9-2562-47c6-be30-3ab96aca2b57",
+      "name": "Table 11",
+      "createdAt": "2026-07-08T16:11:36.310Z"
+    },
+    {
+      "id": "eb061669-1437-479d-9c48-6f1b27848f60",
+      "name": "Table 10",
+      "createdAt": "2026-07-08T16:11:29.904Z"
+    },
+    {
+      "id": "dbd8b7bd-4680-41dd-9fdf-6588d65abcf8",
+      "name": "Table 9",
+      "createdAt": "2026-07-08T16:09:19.199Z"
+    },
+    {
+      "id": "964f5305-9dba-4f75-8f05-3b798d6cdcaa",
+      "name": "Table 8",
+      "createdAt": "2026-07-08T16:09:14.174Z"
+    },
+    {
+      "id": "9fd215a4-1897-4e60-9d2c-6f8271754fbf",
+      "name": "Table 7",
+      "createdAt": "2026-07-08T16:09:08.033Z"
+    },
+    {
+      "id": "03ced2fa-5004-469e-975f-ab91453fec34",
+      "name": "Table 6",
+      "createdAt": "2026-07-08T16:09:03.545Z"
+    },
+    {
+      "id": "51f9772f-6f08-4a16-ac51-a1b0bc40066e",
+      "name": "Table 5",
+      "createdAt": "2026-07-08T16:08:56.564Z"
+    },
+    {
+      "id": "35a20544-081d-494a-9b04-4ef8599ce7fe",
+      "name": "Table 4",
+      "createdAt": "2026-07-08T16:08:52.127Z"
+    },
+    {
+      "id": "afc4d73a-a630-4077-8313-b36567fd5edf",
+      "name": "Table 3",
+      "createdAt": "2026-07-08T16:08:48.782Z"
+    },
+    {
+      "id": "c35a3601-3a7d-47d7-bd25-82cf7cf7a687",
+      "name": "Table 2",
+      "createdAt": "2026-07-08T16:08:37.212Z"
+    }
+  ],
+  "meta": {
+    "totalItems": 11,
+    "totalPages": 2,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+### 11. POST /api/table
+
+- This route creates tables.
+- The route accepts request.body which contains { name }.
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Table created successfully.",
+  "data": {
+    "id": "8bc9d87b-94bf-4f20-b0b2-aab8214a0df3",
+    "name": "Table 12",
+    "createdAt": "2026-07-08T16:26:57.641Z"
+  }
+}
+```
+
+### 12. DELETE /api/table
+
+- This route deletes tables.
+- The route accepts request.body which contains { ids } which is an array of ids.
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "1 tables has been deleted.",
+  "data": {
+    "count": 1
+  }
+}
+```
