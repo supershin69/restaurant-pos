@@ -2,6 +2,7 @@ import { Server as HttpServer } from "http";
 import { Server, Socket } from "socket.io";
 import { registerFoodHandlers } from "../features/food/food.socket.ts";
 import { registerTableHandlers } from "../features/table/table.socket.ts";
+import { registerUserHandlers } from "../features/user/user.socket.ts";
 
 export const initSocketServer = (httpServer: HttpServer): Server => {
     const io = new Server(httpServer, {
@@ -22,6 +23,7 @@ export const initSocketServer = (httpServer: HttpServer): Server => {
 
         registerFoodHandlers(io, socket);
         registerTableHandlers(io, socket);
+        registerUserHandlers(io, socket);
 
         socket.on("disconnect", () => {
             console.log(`Client disconnected: ${socket.id}`);

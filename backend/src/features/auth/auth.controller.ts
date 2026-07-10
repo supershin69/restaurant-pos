@@ -1,10 +1,19 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service.ts";
+import { userService } from "../user/user.service.ts";
+import type { Server } from "socket.io";
 
 class AuthController {
     async register(req: Request, res: Response) {
         try {
             const result = await authService.registerUser(req.body);
+            userService.clearUserCache();
+
+            const io: Server = req.app.get("io");
+            io.emit("users_mutated", {
+                action: "CREATE",
+                message: "User created successfully."
+            });
 
             return res.status(201).json({
                 status: "success",
