@@ -93,6 +93,13 @@ class UserController {
                 return res.status(400).json({ error: "Invalid User ID provided."});
             }
 
+            if (!req.file && !req.body.name && !req.body.email) {
+                return res.status(400).json({ 
+                    status: "fail", 
+                    message: "At least one field (name, email, or profile picture) must be provided to update." 
+                });
+            }
+
             let newPhotoUrl = null;
 
             if (req.file) {
