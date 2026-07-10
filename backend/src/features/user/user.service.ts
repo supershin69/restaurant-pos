@@ -3,6 +3,7 @@ import prisma from "../../db/connect_db.ts";
 import { renameFile } from "../../utils/fileRemamer.ts";
 import { supabase } from "../../utils/supabase.ts";
 import type { UserResponseType } from "./user.types.ts";
+import type { UpdateUserInput } from "./user.schema.ts";
 
 const userCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
 
@@ -112,6 +113,72 @@ class UserService {
         });
 
         return newProfilePhoto;
+    }
+
+    //! Update User Data
+    async updateUserData(id: string, data: UpdateUserInput) {
+        const currentUser = await prisma.user.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                profile: { select: { profilePhotoUrl: true } }
+            }
+        });
+
+        if (!currentUser) {
+            throw new Error("User does not exist");
+        }
+
+        const updatePayload: Partial<UpdateUserInput> = {}
+
+        if (data.name && data.name !== currentUser.name) {
+            updatePayload.name = data.name;
+        }
+
+        if (data.email && data.email !== currentUser.email) {
+            const emailOwner = await prisma.user.findUnique({
+                where: {
+                    email: data.email
+                },
+                select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                    role: true,
+                }
+            });
+
+            if (emailOwner?.id !== id) {
+                throw new Error("Email already exists");
+            }
+
+            updatePayload.email = data.email;
+
+        }
+
+        if (Object.keys(updatePayload).length === 0) {
+            return {
+                success: true,
+                message: "No changes detected. Database update was skipped.",
+                user: currentUser
+            }
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: updatePayload,
+            select: { id: true, name: true, email: true, role: true, profile: { select: { profilePhotoUrl: true } } }
+        });
+
+        return {
+            success: true,
+            message: "User updated successfully",
+            user: updatedUser
+        }
+
     }
 
     //! Delete User Function
