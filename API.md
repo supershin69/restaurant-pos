@@ -78,7 +78,7 @@
 ### 3. POST /api/food/upload
 
 - It uploads food to the database.
-- Query parameters are like this -> data object (name, description?, price) and file object
+- The route is only for admins.
 
 ### Payload (multipart/form-data)
 
@@ -199,7 +199,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 ### 5. PUT /api/food/:id/update
 
 - This route updates the food
-- It accepts id, data object (name, description?, price) and file object
+- The route is only for admins.
 
 ### Payload (multipart/form-data)
 
