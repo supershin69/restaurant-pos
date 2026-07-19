@@ -45,6 +45,15 @@
 - It logs in the existing user.
 - Query Parameters -> (data) object that is like this { email, password }
 
+### Payload
+
+```json
+{
+  "email": "mgshinthant61@gmail.com",
+  "password": "12345678"
+}
+```
+
 ### Success Response
 
 - Http Status Code (200)
@@ -403,5 +412,211 @@ async createFood(data: foodType, file: Express.Multer.File) {
   "data": {
     "count": 1
   }
+}
+```
+
+### 13. GET /api/users
+
+- This route is restricted only for admins.
+- It fetches lists of all users.
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Users fetched successfully",
+  "users": [
+    {
+      "id": "a38a724c-4b06-420d-8510-0ca268e8e951",
+      "name": "Cashier Koko Shin",
+      "email": "mgshinthant56@gmail.com",
+      "role": "CASHIER",
+      "password": "$2b$10$YHZBXEc0vXhXJuH79arDwugUWOrOCU0IsE0pUteO./MxiOToDBsRS",
+      "createdAt": "2026-07-07T07:35:12.689Z",
+      "updatedAt": "2026-07-07T07:35:12.689Z"
+    },
+    {
+      "id": "b0207335-4995-4914-afe0-f8afc13ac45f",
+      "name": "Shin Thant Aung",
+      "email": "mgshinthant58@gmail.com",
+      "role": "ADMIN",
+      "password": "$2b$10$FQBCMIz5r1zNGMvfnc.5XeRA53.3N2F4fwI5X.QkhAu2T3jLnwuV6",
+      "createdAt": "2026-07-06T03:34:15.969Z",
+      "updatedAt": "2026-07-06T03:34:15.969Z"
+    }
+  ],
+  "meta": {
+    "totalItems": 2,
+    "totalPages": 1,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+### Unauthenticated Response
+
+```json
+{
+  "status": "unauthenticated",
+  "message": "Your session has expired. Please log in again."
+}
+```
+
+### Example Role Forbidden Response
+
+```json
+{
+  "status": "forbidden",
+  "message": "You do not have permission to perform this action."
+}
+```
+
+### 14. POST /api/users/create
+
+- This route creates a user.
+- Only admins are allowed to use this route.
+
+### Payload
+
+```json
+{
+  "name": "Ko Kyaw Zaw Aung",
+  "email": "mgshinthant61@gmail.com",
+  "password": "12345678",
+  "role": "CASHIER"
+}
+```
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "User registered successfully",
+  "data": {
+    "id": "61a8c8c7-96be-40b4-b58f-7b8581751368",
+    "name": "Ko Kyaw Zaw Aung",
+    "email": "mgshinthant61@gmail.com",
+    "role": "CASHIER"
+  }
+}
+```
+
+### Example error json
+
+```json
+{
+  "error": "Email already exists"
+}
+```
+
+### 15. GET /api/users/:id
+
+- This route is only for admins.
+- This route shows individual users based on their id.
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "User fetched successfully",
+  "user": {
+    "name": "Ko Kyaw Zaw Aung",
+    "email": "mgshinthant61@gmail.com",
+    "role": "CASHIER",
+    "profilePicture": null
+  }
+}
+```
+
+### Example Role Forbidden Response
+
+```json
+{
+  "status": "forbidden",
+  "message": "You do not have permission to perform this action."
+}
+```
+
+### 16. PUT /api/users/:id/edit
+
+- This route is only for admins.
+- This route allows an admin to edit a user's data.
+
+### Payload
+
+Params - id
+File - file(multipart/form-data) [OPTIONAL]
+
+```json
+{
+  "email": "mgshinthant77@gmail.com",
+  "password": "12345678"
+}
+```
+
+- or
+
+```json
+{
+  "email": "mgshinthant77@gmail.com"
+}
+```
+
+-or
+
+```json
+{
+  "password": "12345678"
+}
+```
+
+### Example Role Forbidden Response
+
+```json
+{
+  "status": "forbidden",
+  "message": "You do not have permission to perform this action."
+}
+```
+
+### 17. DELETE /api/users/delete
+
+- This route is only for admins
+- This allows admins to delete user accounts in bulk, or individually.
+
+### Payload
+
+```json
+{
+  "ids": [
+    "61a8c8c7-96be-40b4-b58f-7b8581751368",
+    "61a8c8c8-96be-40b4-b58f-7b8581751368",
+    "61a8c8c9-96be-40b4-b58f-7b8581751368"
+  ]
+}
+```
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "2 users deleted successfully",
+  "data": {
+    "count": 2
+  }
+}
+```
+
+### Example Role Forbidden Response
+
+```json
+{
+  "status": "forbidden",
+  "message": "You do not have permission to perform this action."
 }
 ```

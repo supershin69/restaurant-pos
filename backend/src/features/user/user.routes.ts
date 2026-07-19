@@ -13,7 +13,7 @@ router.get('/', restrictTo('ADMIN'), userController.fetchUsers);
 router.post('/create', validate(registerSchema), restrictTo('ADMIN'), userController.createUser);
 
 // Dynamic Routes
-router.get('/:id', userController.fetchSingleUser);
+router.get('/:id', restrictTo('ADMIN'), userController.fetchSingleUser);
 router.put('/:id/edit', upload.single('image'), validate(updateUserSchema), userController.updateUser);
 router.delete('/delete', restrictTo('ADMIN'), userController.deleteUsers);
 
