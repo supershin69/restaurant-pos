@@ -548,8 +548,8 @@ async createFood(data: foodType, file: Express.Multer.File) {
 
 ### Payload
 
-Params - id
-File - file(multipart/form-data) [OPTIONAL]
+- Params - id
+- File - file(multipart/form-data) [OPTIONAL]
 
 ```json
 {
