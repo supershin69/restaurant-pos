@@ -566,7 +566,7 @@ File - file(multipart/form-data) [OPTIONAL]
 }
 ```
 
--or
+- or
 
 ```json
 {
