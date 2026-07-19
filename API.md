@@ -79,7 +79,17 @@
 
 - It uploads food to the database.
 - Query parameters are like this -> data object (name, description?, price) and file object
-- Example code ->
+
+### Payload (multipart/form-data)
+
+| Field         | Type   | Required | Description                        |
+| :------------ | :----- | :------- | :--------------------------------- |
+| `name`        | string | Required | Name for food                      |
+| `description` | string | Required | Description for food               |
+| `price`       | int    | Required | Price for food                     |
+| `image`       | file   | Required | Food picture file (PNG, JPG, etc.) |
+
+### Example Code
 
 ```javascript
 
@@ -190,6 +200,15 @@ async createFood(data: foodType, file: Express.Multer.File) {
 
 - This route updates the food
 - It accepts id, data object (name, description?, price) and file object
+
+## Payload (multipart/form-data)
+
+| Field         | Type   | Required | Description                            |
+| :------------ | :----- | :------- | :------------------------------------- |
+| `name`        | string | Optional | New name for food                      |
+| `description` | string | Optional | New description for food               |
+| `price`       | int    | Optional | New price for food                     |
+| `image`       | file   | Optional | New food picture file (PNG, JPG, etc.) |
 
 ### Success Response
 
