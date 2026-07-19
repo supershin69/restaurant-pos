@@ -201,7 +201,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 - This route updates the food
 - It accepts id, data object (name, description?, price) and file object
 
-## Payload (multipart/form-data)
+### Payload (multipart/form-data)
 
 | Field         | Type   | Required | Description                            |
 | :------------ | :----- | :------- | :------------------------------------- |
