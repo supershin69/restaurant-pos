@@ -554,33 +554,9 @@ async createFood(data: foodType, file: Express.Multer.File) {
 
 | Field      | Type   | Required | Description                           |
 | :--------- | :----- | :------- | :------------------------------------ |
-| `name`     | string | Optional | New name for the user                 |
 | `email`    | string | Optional | New email for the user                |
 | `password` | string | Optional | New password                          |
 | `image`    | file   | Optional | Profile picture file (PNG, JPG, etc.) |
-
-```json
-{
-  "email": "mgshinthant77@gmail.com",
-  "password": "12345678"
-}
-```
-
-- or
-
-```json
-{
-  "email": "mgshinthant77@gmail.com"
-}
-```
-
-- or
-
-```json
-{
-  "password": "12345678"
-}
-```
 
 ### Example Role Forbidden Response
 
