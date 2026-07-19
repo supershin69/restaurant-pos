@@ -549,7 +549,15 @@ async createFood(data: foodType, file: Express.Multer.File) {
 ### Payload
 
 - Params - id
-- File - file(multipart/form-data) ['image'] [OPTIONAL]
+
+#### Request Body (multipart/form-data)
+
+| Field      | Type   | Required | Description                           |
+| :--------- | :----- | :------- | :------------------------------------ |
+| `name`     | string | Optional | New name for the user                 |
+| `email`    | string | Optional | New email for the user                |
+| `password` | string | Optional | New password                          |
+| `image`    | file   | Optional | Profile picture file (PNG, JPG, etc.) |
 
 ```json
 {
