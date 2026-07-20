@@ -5,7 +5,7 @@ async function seedUser() {
     console.log("Seeding users...");
     const adminData: RegisterDTO = {
         name: "Shin Thant Aung",
-        email: "zikeciping12@gmail.com",
+        email: "admin12@gmail.com",
         role: "ADMIN",
         password: "admin12345678"
     };
