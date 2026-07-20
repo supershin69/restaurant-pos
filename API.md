@@ -14,33 +14,7 @@
 
 ### Good Luck.
 
-### 1. POST /api/auth/register
-
-- It registers the user using the credentials given by the frontend.
-- It only registers the user.
-- Query Parameters -> (data) object that is like this { name, email, role, password }.
-
-### Success Response
-
-- Http Status Code (201)
-- Content ->
-
-```json
-{
-  "status": "success",
-  "message": "User registered successfully",
-  "data": {
-    "id": "b0207335-4995-4914-afe0-f8afc13ac45f",
-    "name": "Shin Thant Aung",
-    "email": "mgshinthant58@gmail.com",
-    "role": "ADMIN"
-  }
-}
-```
-
-#
-
-### 2. POST /api/auth/login
+### 1. POST /api/auth/login
 
 - It logs in the existing user.
 - Query Parameters -> (data) object that is like this { email, password }
@@ -75,7 +49,7 @@
 
 #
 
-### 3. POST /api/food/upload
+### 2. POST /api/food/upload
 
 - It uploads food to the database.
 - The route is only for admins.
@@ -148,7 +122,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 
 #
 
-### 4. GET /api/food
+### 3. GET /api/food
 
 - It fetches the food items using pagination and caching.
 
@@ -196,7 +170,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 5. PUT /api/food/:id/update
+### 4. PUT /api/food/:id/update
 
 - This route updates the food
 - The route is only for admins.
@@ -228,7 +202,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 6. GET /api/food/deleted
+### 5. GET /api/food/deleted
 
 - This route gets deleted foods.
 
@@ -276,7 +250,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 7. DELETE /api/food/:id/delete
+### 6. DELETE /api/food/:id/delete
 
 - This deletes specific food
 - It accepts id as parameter in req.params
@@ -293,7 +267,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 8. DELETE /api/food/bulk/delete
+### 7. DELETE /api/food/bulk/delete
 
 - This deletes selected foods
 - It accepts ids from req.body.
@@ -310,7 +284,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 9. PUT /api/food/bulk/restore
+### 8. PUT /api/food/bulk/restore
 
 - This restores selected deleted foods.
 - It accepts ids from req.body.
@@ -327,7 +301,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 10. GET /api/table
+### 9. GET /api/table
 
 - This route fetches tables
 
@@ -398,7 +372,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 11. POST /api/table
+### 10. POST /api/table
 
 - This route creates tables.
 - The route accepts request.body which contains { name }.
@@ -417,7 +391,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 12. DELETE /api/table
+### 11. DELETE /api/table
 
 - This route deletes tables.
 - The route accepts request.body which contains { ids } which is an array of ids.
@@ -434,7 +408,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 13. GET /api/users
+### 12. GET /api/users
 
 - This route is restricted only for admins.
 - It fetches lists of all users.
@@ -492,7 +466,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 14. POST /api/users/create
+### 113. POST /api/users/create
 
 - This route creates a user.
 - Only admins are allowed to use this route.
@@ -531,7 +505,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 15. GET /api/users/:id
+### 114. GET /api/users/:id
 
 - This route is only for admins.
 - This route shows individual users based on their id.
@@ -560,7 +534,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 16. PUT /api/users/:id/edit
+### 15. PUT /api/users/:id/edit
 
 - This route is only for admins.
 - This route allows an admin to edit a user's data.
@@ -586,7 +560,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 17. DELETE /api/users/delete
+### 16. DELETE /api/users/delete
 
 - This route is only for admins
 - This allows admins to delete user accounts in bulk, or individually.
@@ -624,7 +598,7 @@ async createFood(data: foodType, file: Express.Multer.File) {
 }
 ```
 
-### 18. GET /api/users/me
+### 17. GET /api/users/me
 
 - This route is available for all logged in users.
 - This route fetches the user profile based on the id inside the token attached.
