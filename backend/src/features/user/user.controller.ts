@@ -81,7 +81,7 @@ class UserController {
 
         } catch (error: any) {
             if (error.message === "User does not exist.") {
-                return res.status(400).json({ error: "User already exists."});
+                return res.status(400).json({ error: "User does not exists."});
             }
 
             console.error("[Fetch Single User Fail]: ", error);
@@ -107,7 +107,7 @@ class UserController {
 
         } catch (error: any) {
              if (error.message === "User does not exist.") {
-                return res.status(400).json({ error: "User already exists."});
+                return res.status(400).json({ error: "User does not exist."});
             }
 
             console.error("[Fetch Single User Fail]: ", error);
