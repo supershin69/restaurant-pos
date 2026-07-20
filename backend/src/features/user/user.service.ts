@@ -86,14 +86,13 @@ class UserService {
         }
     }
 
-    async getMyProfile(id: string): Promise<MyProfileResponseType> {
+    async getMyProfile(id: string): Promise<UserResponseType> {
         const user = await prisma.user.findUnique({
             where: { id },
             select: {
                 name: true,
                 email: true,
                 role: true,
-                password: true,
                 profile: {
                     select: {
                         profilePhotoUrl: true
@@ -110,7 +109,6 @@ class UserService {
             name: user.name,
             email: user.email,
             role: user.role,
-            password: user.password,
             profilePicture: user.profile?.profilePhotoUrl ?? null
         }
     }

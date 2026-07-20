@@ -639,7 +639,6 @@ async createFood(data: foodType, file: Express.Multer.File) {
     "name": "Shin Thant Aung",
     "email": "mgshinthant58@gmail.com",
     "role": "ADMIN",
-    "password": "$2b$10$FQBCMIz5r1zNGMvfnc.5XeRA53.3N2F4fwk3X.QkhAu2T3jLnwuV6",
     "profilePicture": null
   }
 }
