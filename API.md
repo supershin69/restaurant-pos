@@ -623,3 +623,24 @@ async createFood(data: foodType, file: Express.Multer.File) {
   "message": "You do not have permission to perform this action."
 }
 ```
+
+### 18. GET /api/users/me
+
+- This route is available for all logged in users.
+- This route fetches the user profile based on the id inside the token attached.
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Your profile fetched successfully",
+  "user": {
+    "name": "Shin Thant Aung",
+    "email": "mgshinthant58@gmail.com",
+    "role": "ADMIN",
+    "password": "$2b$10$FQBCMIz5r1zNGMvfnc.5XeRA53.3N2F4fwk3X.QkhAu2T3jLnwuV6",
+    "profilePicture": null
+  }
+}
+```

@@ -2,7 +2,7 @@ import NodeCache from "node-cache";
 import prisma from "../../db/connect_db.ts";
 import { renameFile } from "../../utils/fileRemamer.ts";
 import { supabase } from "../../utils/supabase.ts";
-import type { UserResponseType } from "./user.types.ts";
+import type { MyProfileResponseType, UserResponseType } from "./user.types.ts";
 import type { UpdateUserInput } from "./user.schema.ts";
 
 const userCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
@@ -82,6 +82,35 @@ class UserService {
             name: user.name,
             email: user.email,
             role: user.role,
+            profilePicture: user.profile?.profilePhotoUrl ?? null
+        }
+    }
+
+    async getMyProfile(id: string): Promise<MyProfileResponseType> {
+        const user = await prisma.user.findUnique({
+            where: { id },
+            select: {
+                name: true,
+                email: true,
+                role: true,
+                password: true,
+                profile: {
+                    select: {
+                        profilePhotoUrl: true
+                    }
+                }
+            }
+        });
+
+        if (!user) {
+            throw new Error("User does not exist.");
+        }
+
+        return {
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            password: user.password,
             profilePicture: user.profile?.profilePhotoUrl ?? null
         }
     }

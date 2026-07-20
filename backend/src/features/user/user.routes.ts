@@ -10,6 +10,7 @@ const router = Router();
 
 // Static Routes
 router.get('/', restrictTo('ADMIN'), userController.fetchUsers);
+router.get('/me', userController.fetchMyself);
 router.post('/create', validate(registerSchema), restrictTo('ADMIN'), userController.createUser);
 
 // Dynamic Routes

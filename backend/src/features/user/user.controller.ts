@@ -2,6 +2,10 @@ import type { Request, Response } from "express";
 import { authService } from "../auth/auth.service.ts";
 import { userService } from "./user.service.ts";
 import { Server } from "socket.io";
+import jwt from 'jsonwebtoken';
+import type { AuthRequest } from "../../middlewares/auth.middleware.ts";
+
+const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_key';
 
 
 class UserController {
@@ -77,6 +81,32 @@ class UserController {
 
         } catch (error: any) {
             if (error.message === "User does not exist.") {
+                return res.status(400).json({ error: "User already exists."});
+            }
+
+            console.error("[Fetch Single User Fail]: ", error);
+            return res.status(500).json({ error: "Failed to fetch that user."});
+        }
+    }
+
+    async fetchMyself(req: AuthRequest, res: Response) {
+        try {
+            const user = req.user;
+            if (!user) {
+                return res.status(401).json({ error: "You are unauthenticated. Please log in."});
+            }
+            const id = user.userId;
+            const myProfile = await userService.getMyProfile(id);
+
+            return res.status(200).json({
+                status: "success",
+                message: "Your profile fetched successfully",
+                user: myProfile
+            });
+
+
+        } catch (error: any) {
+             if (error.message === "User does not exist.") {
                 return res.status(400).json({ error: "User already exists."});
             }
 
