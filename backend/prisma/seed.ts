@@ -1,6 +1,7 @@
 import { authService } from "../src/features/auth/auth.service.ts";
 import prisma from "../src/db/connect_db.ts";
 import type { RegisterDTO } from "../src/features/auth/auth.types.ts";
+
 async function seedUser() {
     console.log("Seeding users...");
     const adminData: RegisterDTO = {
