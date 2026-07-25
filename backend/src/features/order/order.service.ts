@@ -33,6 +33,7 @@ class OrderService {
             return {
                 foodId: item.foodId,
                 quantity: item.quantity,
+                status: "PLACED",
                 priceAtOrder,
             };
         });

@@ -1,19 +1,80 @@
 import { authService } from "../src/features/auth/auth.service.ts";
 import prisma from "../src/db/connect_db.ts";
 import type { RegisterDTO } from "../src/features/auth/auth.types.ts";
+import prompts from "prompts";
+import z from "zod";
 
 async function seedUser() {
     console.log("Seeding users...");
+
+    const existingAdmin = await prisma.user.findFirst({
+        where: {
+            role: "ADMIN"
+        }
+    });
+
+    if (existingAdmin) {
+        console.log("An admin account already exists.");
+        console.log("Seeding aborted to prevent unauthorized admin account creation...");
+        //console.log("For testing purposes, we will let you create admin account...");
+        return;
+    }
+
+    console.log("No admin found. Please configure the initial admin account:");
+
+    const response = await prompts([
+        {
+            type: 'text',
+            name: 'name',
+            message: 'Enter admin name:',
+            validate: (value) =>
+                z.string().min(1).safeParse(value).success
+                    ? true
+                    : "Name cannot be empty",
+            initial: 'Admin'
+        },
+        {
+            type: 'text',
+            name: 'email',
+            message: 'Enter admin email:',
+            validate: value => z.string().email().safeParse(value).success ? true : 'Please enter a valid email address'
+        },
+        {
+            type: 'password',
+            name: 'password',
+            message: 'Enter admin password (input will be hidden):',
+            validate: (value) =>
+                z.string().min(8).safeParse(value).success
+                    ? true
+                    : "Password must be at least 8 characters long"
+        }
+    ], 
+    {
+        onCancel: () => {
+            console.log("\nSetup cancelled.");
+            process.exit(0);
+
+        }
+    });
+
+    if (!response.email || !response.name || !response.password) {
+        console.log("Seeding cancelled... Missing required fields...");
+        return;
+    }
+
     const adminData: RegisterDTO = {
-        name: "Shin Thant Aung",
-        email: "admin12@gmail.com",
+        name: response.name,
+        email: response.email,
         role: "ADMIN",
-        password: "admin12345678"
+        password: response.password
     };
 
-    const newAdmin = await authService.registerUser(adminData);
-
-    console.log(`Admin created successfully: ${newAdmin.user.email}`);
+    try {
+        const newAdmin = await authService.registerUser(adminData);
+        console.log(`✅ Admin created successfully: ${newAdmin.user.email}`);
+    } catch (error) {
+        console.error("❌ Failed to create admin:", error);
+    }
 }
 
 seedUser()

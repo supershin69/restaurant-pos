@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "seed": "tsx prisma/db_seed.ts",
+    "seed": "tsx --env-file=.env prisma/seed.ts",
     "db:pull": "NODE_OPTIONS=--dns-result-order=ipv4first dotenv -e .env -- prisma db pull"
   },
   "keywords": [],
@@ -29,6 +29,7 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.2.0",
     "node-cache": "^5.1.2",
+    "prompts": "^2.4.2",
     "socket.io": "^4.8.3",
     "zod": "^4.4.3"
   },
@@ -39,6 +40,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.2.0",
     "@types/node": "^20.11.0",
+    "@types/prompts": "^2.4.9",
     "dotenv-cli": "^11.0.0",
     "prisma": "^7.8.0",
     "tsx": "^4.23.0",

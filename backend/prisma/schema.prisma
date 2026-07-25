@@ -17,6 +17,11 @@ enum Role {
   CASHIER
 }
 
+enum Status {
+  PLACED
+  CANCELLED
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -125,6 +130,7 @@ model OrderItem {
   orderId      String   @map("order_id")
   foodId       String   @map("food_id")
   quantity     Int      @default(1) // Added to prevent duplicate rows
+  status       Status
   priceAtOrder Int      @map("price_at_order") // Locks in the MMK price dynamically
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
