@@ -2,7 +2,7 @@ import { authService } from "../src/features/auth/auth.service.ts";
 import prisma from "../src/db/connect_db.ts";
 import type { RegisterDTO } from "../src/features/auth/auth.types.ts";
 import prompts from "prompts";
-import z from "zod";
+import { registerSchema } from "../src/features/auth/auth.schema.ts";
 
 async function seedUser() {
     console.log("Seeding users...");
@@ -28,7 +28,7 @@ async function seedUser() {
             name: 'name',
             message: 'Enter admin name:',
             validate: (value) =>
-                z.string().min(1).safeParse(value).success
+                registerSchema.shape.name.safeParse(value).success
                     ? true
                     : "Name cannot be empty",
             initial: 'Admin'
@@ -37,14 +37,14 @@ async function seedUser() {
             type: 'text',
             name: 'email',
             message: 'Enter admin email:',
-            validate: value => z.string().email().safeParse(value).success ? true : 'Please enter a valid email address'
+            validate: value => registerSchema.shape.email.safeParse(value).success ? true : 'Please enter a valid email address'
         },
         {
             type: 'password',
             name: 'password',
             message: 'Enter admin password (input will be hidden):',
             validate: (value) =>
-                z.string().min(8).safeParse(value).success
+                registerSchema.shape.password.safeParse(value).success
                     ? true
                     : "Password must be at least 8 characters long"
         }
