@@ -1,5 +1,5 @@
 import NodeCache from "node-cache";
-import type { CreateOrderInput } from "./order.schema.ts";
+import type { CreateOrderInput, UpdateOrderInput } from "./order.schema.ts";
 import prisma from "../../db/connect_db.ts";
 
 const orderCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
@@ -33,7 +33,7 @@ class OrderService {
             return {
                 foodId: item.foodId,
                 quantity: item.quantity,
-                status: "PLACED",
+                status: "PLACED" as const,
                 priceAtOrder,
             };
         });
@@ -88,7 +88,7 @@ class OrderService {
         const whereClause: any = { isDeleted }
         whereClause.AND = [
             search ? { id: { contains: search, mode: 'insensitive' }} : {},
-            userId ? { userId } : {},
+            userId ? { cashierId: userId } : {},
             tableId ? { tableId } : {}
         ];
 
@@ -117,6 +117,128 @@ class OrderService {
         return { data: result, fromCache: false }
     }
 
+    async updateOrder(orderId: string, input: UpdateOrderInput) {
+        const { items } = input;
+        const existingOrder = await prisma.order.findUnique({
+            where: { id: orderId },
+            include: { items: true }
+        });
+
+        if (!existingOrder || existingOrder.isDeleted) {
+            throw new Error("Order not found or has been deleted");
+        }
+
+        const foodIds = items.map((i) => i.foodId);
+        const foods = await prisma.food.findMany({
+            where: {id: {
+                in: foodIds
+            }, isDeleted: false }
+        });
+
+        if (foods.length !== items.length) {
+            throw new Error("One or more food items were not found or are inactive.");
+        }
+
+        const foodMap = new Map(foods.map((f) => [f.id, f]));
+
+        const activeItems = existingOrder.items.filter((item) => item.status === "PLACED");
+        const activeItemMap = new Map(activeItems.map((i) => [i.foodId, i]));
+
+        const incomingFoodIds = new Set(items.map((i) => i.foodId));
+        const itemIdsToCancel: string[] = [];
+        const itemsToCreate: { foodId: string; quantity: number; priceAtOrder: number; status: "PLACED" }[] = [];
+
+        for (const activeItem of activeItems) {
+            if (!incomingFoodIds.has(activeItem.foodId)) {
+                itemIdsToCancel.push(activeItem.id);
+            }
+        }
+
+        for (const item of items) {
+            const existingActive = activeItemMap.get(item.foodId);
+            const food = foodMap.get(item.foodId);
+
+            if (existingActive) {
+                if (existingActive.quantity === item.quantity) {
+                    continue;
+                } else {
+                    itemIdsToCancel.push(existingActive.id);
+                    itemsToCreate.push({
+                        foodId: item.foodId,
+                        quantity: item.quantity,
+                        priceAtOrder: food!.price,
+                        status: "PLACED" as const
+                    });
+                }
+            } else {
+                itemsToCreate.push({
+                    foodId: item.foodId,
+                    quantity: item.quantity,
+                    priceAtOrder: food!.price,
+                    status: "PLACED"
+                });
+            }
+        }
+
+        let updatedTotalPrice = 0;
+
+        for (const activeItem of activeItems) {
+            if (!itemIdsToCancel.includes(activeItem.id)) {
+                updatedTotalPrice += activeItem.priceAtOrder * activeItem.quantity;
+            }
+        }
+
+        for (const newItem of itemsToCreate) {
+            updatedTotalPrice += newItem.priceAtOrder * newItem.quantity;
+        }
+
+        const updatedOrder = await prisma.$transaction(async (tx) => {
+            if (itemIdsToCancel.length > 0) {
+                await tx.orderItem.updateMany({
+                    where: { id: { in: itemIdsToCancel } },
+                    data: { status: "CANCELLED" }
+                });
+            }
+
+            if (itemsToCreate.length > 0) {
+                await tx.orderItem.createMany({
+                    data: itemsToCreate.map((item) => ({
+                        orderId,
+                        foodId: item.foodId,
+                        quantity: item.quantity,
+                        priceAtOrder: item.priceAtOrder,
+                        status: item.status
+                    }))
+                });
+            }
+
+            return await tx.order.update({
+                where: { id: orderId },
+                data: {
+                    totalPrice: updatedTotalPrice
+                },
+                include: {
+                    table: true,
+                    cashier: {
+                        select: { id: true, name: true, role: true }
+                    },
+                    items: {
+                        include: {
+                            food: {
+                                select: { name: true, photoUrl: true }
+                            },
+                        },
+                        orderBy: { createdAt: 'asc' }
+                    }
+                }
+            })
+        });
+
+        return updatedOrder;
+
+        
+    }
+
     async viewOrderDetail(orderId: string) {
         const result = await prisma.order.findUnique({
             where: { id: orderId },
@@ -138,6 +260,7 @@ class OrderService {
                     select: {
                         id: true,
                         quantity: true,
+                        status: true,
                         priceAtOrder: true,
                         food: {
                             select: {
@@ -145,8 +268,9 @@ class OrderService {
                                 name: true,
                                 photoUrl: true
                             }
-                        }
-                    }
+                        },
+                    },
+                    orderBy: { createdAt: 'asc' }
                 }
             }
         });
@@ -191,6 +315,14 @@ class OrderService {
 
         return restoredOrders;
     }
+
+    clearOrderCache() {
+        const keys = orderCache.keys();
+        const orderKeys = keys.filter(key => key.startsWith('orders:'));
+        if (orderKeys.length > 0) {
+            orderCache.del(orderKeys);
+        }
+    };
 
 
 
