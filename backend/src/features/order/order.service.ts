@@ -117,7 +117,7 @@ class OrderService {
         return { data: result, fromCache: false }
     }
 
-    async updateOrder(orderId: string, input: UpdateOrderInput) {
+    async updateOrder(actorId: string, orderId: string, input: UpdateOrderInput) {
         const { items } = input;
         const existingOrder = await prisma.order.findUnique({
             where: { id: orderId },
@@ -275,45 +275,46 @@ class OrderService {
             }
         });
 
-        if (!result) {
-            throw new Error("Order not found");
-        }
-
         return result;
     }
 
-    async deleteOrders(ids: string[]) {
-        const deletedOrders = await prisma.order.updateMany({
-            where: {
-                id: {
-                    in: ids
+    async deleteOrders(actorId: string, ids: string[]) {
+        return await prisma.$transaction(async (tx) => {
+            const deletedOrders = await tx.order.updateMany({
+                where: {
+                    id: {
+                        in: ids
+                    },
+                    isDeleted: false
                 },
-                isDeleted: false
-            },
-            data: {
-                isDeleted: true,
-                deletedAt: new Date()
-            }
-        });
+                data: {
+                    isDeleted: true,
+                    deletedAt: new Date()
+                }
+            });
 
-        return deletedOrders;
+            return deletedOrders;
+        });
+        
     }
 
-    async restoreOrders(ids: string[]) {
-        const restoredOrders = await prisma.order.updateMany({
-            where: {
-                id: {
-                    in: ids
-                },
-                isDeleted: true
-            },
-            data: {
-                isDeleted: false,
-                deletedAt: null
-            }
-        });
+    async restoreOrders(actorId: string, ids: string[]) {
+        return await prisma.$transaction(async (tx) => {
+            const restoredOrders = await tx.order.updateMany({
+                    where: {
+                        id: {
+                            in: ids
+                        },
+                        isDeleted: true
+                    },
+                    data: {
+                        isDeleted: false,
+                        deletedAt: null
+                    }
+                });
 
-        return restoredOrders;
+                return restoredOrders;
+            });
     }
 
     clearOrderCache() {

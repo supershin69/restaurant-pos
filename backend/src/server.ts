@@ -11,6 +11,7 @@ import { createServer } from "http";
 import { initSocketServer } from "./config/socket.config.ts";
 import { tableRoutes } from "./features/table/table.routes.ts";
 import { userRoutes } from "./features/user/user.routes.ts";
+import { orderRoutes } from "./features/order/order.routes.ts";
 
 const app: Express = express();
 const httpServer = createServer(app);
@@ -34,6 +35,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/food', requireAuth, restrictTo('ADMIN', 'CASHIER'), foodRoutes);
 app.use('/api/table', requireAuth, restrictTo('ADMIN', 'CASHIER'), tableRoutes);
 app.use('/api/users', requireAuth, restrictTo('ADMIN', 'CASHIER'), userRoutes);
+app.use('/api/orders', requireAuth, restrictTo('ADMIN', 'CASHIER'), orderRoutes);
 
 async function startServer() {
     try {
