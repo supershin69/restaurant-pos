@@ -32,8 +32,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/food', requireAuth, restrictTo('ADMIN', 'CASHIER'), foodRoutes);
-app.use('/api/table', requireAuth, restrictTo('ADMIN', 'CASHIER'), tableRoutes);
+app.use('/api/foods', requireAuth, restrictTo('ADMIN', 'CASHIER'), foodRoutes);
+app.use('/api/tables', requireAuth, restrictTo('ADMIN', 'CASHIER'), tableRoutes);
 app.use('/api/users', requireAuth, restrictTo('ADMIN', 'CASHIER'), userRoutes);
 app.use('/api/orders', requireAuth, restrictTo('ADMIN', 'CASHIER'), orderRoutes);
 

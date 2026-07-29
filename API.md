@@ -617,3 +617,281 @@ async createFood(data: foodType, file: Express.Multer.File) {
   }
 }
 ```
+
+### 18. GET /api/orders
+
+- This route is available for all logged in users.
+- This route fetches all the orders, and filter then accordingly.
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Orders fetched successfully",
+  "orders": [
+    {
+      "id": "4bbac066-e2a9-4822-871f-c09a0575f3bb",
+      "cashierId": "b0207335-4995-4914-afe0-f8afc13ac45f",
+      "tableId": "546129d9-2562-47c6-be30-3ab96aca2b57",
+      "totalPrice": 20000,
+      "createdAt": "2026-07-29T04:27:45.947Z",
+      "updatedAt": "2026-07-29T04:40:28.852Z",
+      "isDeleted": false,
+      "deletedAt": null
+    }
+  ],
+  "meta": {
+    "totalItems": 1,
+    "totalPages": 1,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+### 19. GET /api/orders/:id
+
+- This route is available for all logged in users.
+- This route fetches the detail of a specific order based on id.
+
+```json
+{
+  "status": "success",
+  "message": "Fetched order detail successfully.",
+  "order": {
+    "id": "4bbac066-e2a9-4822-871f-c09a0575f3bb",
+    "cashierId": "b0207335-4995-4914-afe0-f8afc13ac45f",
+    "tableId": "546129d9-2562-47c6-be30-3ab96aca2b57",
+    "totalPrice": 20000,
+    "createdAt": "2026-07-29T04:27:45.947Z",
+    "updatedAt": "2026-07-29T04:40:28.852Z",
+    "isDeleted": false,
+    "deletedAt": null,
+    "table": {
+      "id": "546129d9-2562-47c6-be30-3ab96aca2b57",
+      "name": "Table 11"
+    },
+    "cashier": {
+      "id": "b0207335-4995-4914-afe0-f8afc13ac45f",
+      "name": "Shin Thant Aung",
+      "role": "ADMIN"
+    },
+    "items": [
+      {
+        "id": "6c4f28c3-0894-4cb9-8d00-79700d5060e4",
+        "quantity": 5,
+        "status": "CANCELLED",
+        "priceAtOrder": 2500,
+        "food": {
+          "id": "606565f1-1e3b-4473-9a28-5dd17512bc8b",
+          "name": "ပလာတာ အသေး",
+          "photoUrl": "https://svaksufqqrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783485790002-wjck3n.png"
+        }
+      },
+      {
+        "id": "0e1d15a0-3ccf-498f-8ca5-5ee655b2268b",
+        "quantity": 8,
+        "status": "PLACED",
+        "priceAtOrder": 2500,
+        "food": {
+          "id": "606565f1-1e3b-4473-9a28-5dd17512bc8b",
+          "name": "ပလာတာ အသေး",
+          "photoUrl": "https://svaksufqqrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783485790002-wjck3n.png"
+        }
+      }
+    ]
+  }
+}
+```
+
+### 20. POST /api/orders
+
+- This route is available for all logged in users.
+- This route creates orders.
+
+### Example Payload
+
+```json
+{
+  "tableId": "eb061669-1437-479d-9c48-6f1b27848f60",
+  "items": [
+    {
+      "foodId": "606565f1-1e3b-4473-9a28-5dd17512bc8b",
+      "quantity": 8
+    }
+  ]
+}
+```
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Order created successfully",
+  "data": {
+    "id": "3c0fc147-d7d2-4107-a26c-5c92a46db2c6",
+    "cashierId": "b0207335-4995-4914-afe0-f8afc13ac45f",
+    "tableId": "eb061669-1437-479d-9c48-6f1b27848f60",
+    "totalPrice": 20000,
+    "createdAt": "2026-07-29T04:49:19.164Z",
+    "updatedAt": "2026-07-29T04:49:19.164Z",
+    "isDeleted": false,
+    "deletedAt": null,
+    "table": {
+      "id": "eb061669-1437-479d-9c48-6f1b27848f60",
+      "name": "Table 10",
+      "createdAt": "2026-07-08T16:11:29.904Z"
+    },
+    "cashier": {
+      "id": "b0207335-4995-4914-afe0-f8afc13ac45f",
+      "name": "Shin Thant Aung",
+      "role": "ADMIN"
+    },
+    "items": [
+      {
+        "id": "b85594ff-b225-4fdf-a2b1-f365d84b3998",
+        "orderId": "3c0fc147-d7d2-4107-a26c-5c92a46db2c6",
+        "foodId": "606565f1-1e3b-4473-9a28-5dd17512bc8b",
+        "quantity": 8,
+        "status": "PLACED",
+        "priceAtOrder": 2500,
+        "createdAt": "2026-07-29T04:49:19.164Z",
+        "updatedAt": "2026-07-29T04:49:19.164Z",
+        "food": {
+          "name": "ပလာတာ အသေး",
+          "photoUrl": "https://svaksufqqrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783485790002-wjck3n.png"
+        }
+      }
+    ]
+  }
+}
+```
+
+### 21. PUT /api/orders/:id/update
+
+- This route is available for both admin and cashier.
+- This route edits orders based on business requirements.
+
+### Example Payload
+
+```json
+{
+  "items": [
+    {
+      "foodId": "606565f1-1e3b-4473-9a28-5dd17512bc8b",
+      "quantity": 8
+    }
+  ]
+}
+```
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "Order updated successfully",
+  "data": {
+    "id": "4bbac066-e2a9-4822-871f-c09a0575f3bb",
+    "cashierId": "b0207335-4995-4914-afe0-f8afc13ac45f",
+    "tableId": "546129d9-2562-47c6-be30-3ab96aca2b57",
+    "totalPrice": 20000,
+    "createdAt": "2026-07-29T04:27:45.947Z",
+    "updatedAt": "2026-07-29T04:40:28.852Z",
+    "isDeleted": false,
+    "deletedAt": null,
+    "table": {
+      "id": "546129d9-2562-47c6-be30-3ab96aca2b57",
+      "name": "Table 11",
+      "createdAt": "2026-07-08T16:11:36.310Z"
+    },
+    "cashier": {
+      "id": "b0207335-4995-4914-afe0-f8afc13ac45f",
+      "name": "Shin Thant Aung",
+      "role": "ADMIN"
+    },
+    "items": [
+      {
+        "id": "6c4f28c3-0894-4cb9-8d00-79700d5060e4",
+        "orderId": "4bbac066-e2a9-4822-871f-c09a0575f3bb",
+        "foodId": "606565f1-1e3b-4473-9a28-5dd17512bc8b",
+        "quantity": 5,
+        "status": "CANCELLED",
+        "priceAtOrder": 2500,
+        "createdAt": "2026-07-29T04:27:45.947Z",
+        "updatedAt": "2026-07-29T04:40:28.438Z",
+        "food": {
+          "name": "ပလာတာ အသေး",
+          "photoUrl": "https://svaksufqqrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783485790002-wjck3n.png"
+        }
+      },
+      {
+        "id": "0e1d15a0-3ccf-498f-8ca5-5ee655b2268b",
+        "orderId": "4bbac066-e2a9-4822-871f-c09a0575f3bb",
+        "foodId": "606565f1-1e3b-4473-9a28-5dd17512bc8b",
+        "quantity": 8,
+        "status": "PLACED",
+        "priceAtOrder": 2500,
+        "createdAt": "2026-07-29T04:40:28.644Z",
+        "updatedAt": "2026-07-29T04:40:28.644Z",
+        "food": {
+          "name": "ပလာတာ အသေး",
+          "photoUrl": "https://svaksufqqrmtnttjyesr.supabase.co/storage/v1/object/public/pos-food-photo/images/1783485790002-wjck3n.png"
+        }
+      }
+    ]
+  }
+}
+```
+
+### 22. DELETE /api/orders/delete
+
+- This route is available for all logged in users.
+- This route soft delete one or many orders.
+
+### Example Payload
+
+```json
+{
+  "ids": ["3c0fc147-d7d2-4107-a26c-5c92a46db2c6"]
+}
+```
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "1 orders deleted successfully.",
+  "data": {
+    "count": 1
+  }
+}
+```
+
+### 23. PUT /api/orders/restore
+
+- This route is availabe for all logged in users.
+- This route restores one or more deleted orders based on business needs.
+
+### Exammple Payload
+
+```json
+{
+  "ids": ["3c0fc147-d7d2-4107-a26c-5c92a46db2c6"]
+}
+```
+
+### Success Response
+
+```json
+{
+  "status": "success",
+  "message": "1 orders restored successfully.",
+  "data": {
+    "count": 1
+  }
+}
+```
