@@ -34,8 +34,8 @@ const data = [
     url: "/dashboard"
   },
   {
-    name: "Categories",
-    url: "/dashboard/categories"
+    name: "Foods",
+    url: "/dashboard/foods"
   }
 ]
 
