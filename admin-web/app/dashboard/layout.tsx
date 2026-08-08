@@ -17,6 +17,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 
+export const user = await getCurrentUser();
+
 
 async function DashboardLayout({ children }: LayoutProps<"/dashboard">) {
     const user = await getCurrentUser();
@@ -30,7 +32,7 @@ async function DashboardLayout({ children }: LayoutProps<"/dashboard">) {
     }
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user.user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
