@@ -5,5 +5,6 @@ import { loginSchema, registerSchema } from "./auth.schema.ts";
 
 const router = Router();
 router.post('/login', validate(loginSchema), authController.login);
+router.post('/logout', authController.logout);
 
 export { router as authRoutes };

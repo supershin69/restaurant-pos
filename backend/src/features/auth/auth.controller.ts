@@ -58,6 +58,25 @@ class AuthController {
         res.status(500).json({ error: 'An unexpected error occurred during login.' });
     }
 }
+    async logout(req: Request, res: Response) {
+        try {
+            res.cookie("token", "", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 0
+            });
+
+            return res.status(200).json({
+                status: "success",
+                message: "User logged out successfully"
+            });
+        } catch (error: any) {
+            console.error('[Auth Logout Error]:', error);
+            res.status(500).json({ error: 'An unexpected error occurred during logout.' });
+        }
+    }
+
 }
 
 export const authController = new AuthController();
