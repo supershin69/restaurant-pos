@@ -28,4 +28,5 @@ export const loginSchema = z.object({
     .string({ error: 'Password is required' })
     .min(6, 'Password must be at least 6 characters long'),
     
-})
+});
+
